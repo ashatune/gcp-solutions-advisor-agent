@@ -7,6 +7,7 @@ venv/
 
 # Secrets & Local State
 .env
+.local_deploy/
 *.tfstate
 *.tfstate.*
 .terraform/

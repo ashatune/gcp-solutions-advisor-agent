@@ -1,100 +1,11 @@
 """Grounded GCP documentation search tool and Secret Manager integration with guided error recovery."""
 
 import os
-from pathlib import Path
 import time
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
-try:
-    from dotenv import load_dotenv  # type: ignore
-except ImportError:  # pragma: no cover
-
-    def load_dotenv(dotenv_path: Optional[str] = None) -> bool:
-        """Fallback .env file loader when python-dotenv is not installed."""
-        env_file = Path(dotenv_path or ".env")
-        if not env_file.exists():
-            return False
-        for line in env_file.read_text(encoding="utf-8").splitlines():
-            stripped = line.strip()
-            if not stripped or stripped.startswith("#") or "=" not in stripped:
-                continue
-            key, _, val = stripped.partition("=")
-            os.environ.setdefault(key.strip(), val.strip().strip("'\""))
-        return True
-
-
-try:
-    from pydantic import BaseModel, Field, ValidationError  # type: ignore
-except ImportError:  # pragma: no cover
-
-    class ValidationError(ValueError):
-        """Fallback ValidationError matching Pydantic's .errors() interface."""
-
-        def __init__(self, msg: str) -> None:
-            super().__init__(msg)
-            self._msg = msg
-
-        def errors(self) -> List[Dict[str, str]]:
-            return [{"msg": self._msg}]
-
-    def Field(default: Any = ..., **kwargs: Any) -> Any:  # noqa: N802
-        """Fallback Field descriptor storing validation constraints and description."""
-        return {"__field_spec__": True, "default": default, **kwargs}
-
-    class BaseModel:
-        """Fallback BaseModel enforcing Field constraints and providing .model_dump()."""
-
-        def __init__(self, **data: Any) -> None:
-            annotations = getattr(self.__class__, "__annotations__", {})
-            for name in annotations:
-                spec = getattr(self.__class__, name, None)
-                if isinstance(spec, dict) and spec.get("__field_spec__"):
-                    default_val = spec["default"]
-                    default_factory = spec.get("default_factory")
-                    if name in data:
-                        val = data[name]
-                    elif default_factory is not None:
-                        val = default_factory()
-                    elif default_val is not Ellipsis:
-                        val = default_val
-                    else:
-                        raise ValidationError(f"Field '{name}' is required.")
-
-                    if val is not None:
-                        min_len = spec.get("min_length")
-                        max_len = spec.get("max_length")
-                        ge_val = spec.get("ge")
-                        le_val = spec.get("le")
-                        if min_len is not None and len(val) < min_len:
-                            raise ValidationError(
-                                f"Field '{name}' length must be >= {min_len}."
-                            )
-                        if max_len is not None and len(val) > max_len:
-                            raise ValidationError(
-                                f"Field '{name}' length must be <= {max_len}."
-                            )
-                        if ge_val is not None and val < ge_val:
-                            raise ValidationError(f"Field '{name}' must be >= {ge_val}.")
-                        if le_val is not None and val > le_val:
-                            raise ValidationError(f"Field '{name}' must be <= {le_val}.")
-                    setattr(self, name, val)
-                else:
-                    setattr(self, name, data.get(name, spec))
-
-        def model_dump(self) -> Dict[str, Any]:
-            result: Dict[str, Any] = {}
-            for key, value in self.__dict__.items():
-                if isinstance(value, BaseModel):
-                    result[key] = value.model_dump()
-                elif isinstance(value, list):
-                    result[key] = [
-                        item.model_dump() if isinstance(item, BaseModel) else item
-                        for item in value
-                    ]
-                else:
-                    result[key] = value
-            return result
-
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field, ValidationError
 
 from agent.telemetry.logger import get_logger
 from agent.telemetry.tracer import get_tracer

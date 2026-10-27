@@ -4,10 +4,7 @@ import time
 from typing import Callable, Dict, List, Optional
 import uuid
 
-try:
-    from pydantic import BaseModel, Field, ValidationError  # type: ignore
-except ImportError:  # pragma: no cover
-    from agent.tools.gcp_search import BaseModel, Field, ValidationError  # type: ignore
+from pydantic import BaseModel, Field, ValidationError
 
 from agent.telemetry.logger import get_logger
 from agent.telemetry.pii_redactor import redact_pii

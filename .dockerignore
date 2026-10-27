@@ -1,8 +1,0 @@
-__pycache__/
-*.pyc
-.venv/
-venv/
-.git/
-.env
-.pytest_cache/
-terraform/.terraform/
