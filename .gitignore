@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Secrets & Local State
+.env
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl

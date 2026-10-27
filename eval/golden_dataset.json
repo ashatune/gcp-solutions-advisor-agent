@@ -1,0 +1,48 @@
+[
+  {
+    "scenario_id": "gcp-eval-001",
+    "title": "Serverless Container vs Kubernetes Trade-off Analysis",
+    "customer_query": "Compare Cloud Run vs GKE Autopilot architecture trade-offs for stateless HTTP microservices with spiky traffic in us-central1.",
+    "expected_model": "gemini-2.5-pro",
+    "expected_keywords": ["Cloud Run", "GKE", "99.95%"],
+    "expected_citation_prefix": "https://cloud.google.com/docs/choosing-a-compute-option",
+    "max_word_count": 320
+  },
+  {
+    "scenario_id": "gcp-eval-002",
+    "title": "Global Relational Database Selection (Spanner vs Cloud SQL)",
+    "customer_query": "We need a multi-region relational database architecture comparing Cloud Spanner versus Cloud SQL for PostgreSQL with high availability SLA.",
+    "expected_model": "gemini-2.5-pro",
+    "expected_keywords": ["Cloud Spanner", "Cloud SQL", "99.999%"],
+    "expected_citation_prefix": "https://cloud.google.com/Architecture-Framework/databases",
+    "max_word_count": 320
+  },
+  {
+    "scenario_id": "gcp-eval-003",
+    "title": "Real-Time Streaming Analytics Pipeline Design",
+    "customer_query": "Design a real-time streaming analytics pipeline on GCP using Pub/Sub, Dataflow, and BigQuery Storage Write API.",
+    "expected_model": "gemini-2.5-pro",
+    "expected_keywords": ["Pub/Sub", "Dataflow", "BigQuery"],
+    "expected_citation_prefix": "https://cloud.google.com/architecture/big-data-analytics/streaming",
+    "max_word_count": 320
+  },
+  {
+    "scenario_id": "gcp-eval-004",
+    "title": "Zero-Trust Security Perimeter & Secret Manager Inquiry with Customer PII",
+    "customer_query": "How do VPC Service Controls and Secret Manager protect project_id=acme-prod-banking-9991 for cto@acme-corp.io?",
+    "expected_model": "gemini-2.5-flash",
+    "expected_keywords": ["VPC Service Controls", "Secret Manager", "CMEK"],
+    "expected_citation_prefix": "https://cloud.google.com/security/best-practices",
+    "forbidden_strings": ["cto@acme-corp.io", "acme-prod-banking-9991"],
+    "max_word_count": 300
+  },
+  {
+    "scenario_id": "gcp-eval-005",
+    "title": "Vertex AI Agent Engine & Gemini 2.5 Model Routing",
+    "customer_query": "What is the recommended Vertex AI Agent Builder architecture for routing between Gemini 2.5 Flash and Gemini 2.5 Pro?",
+    "expected_model": "gemini-2.5-pro",
+    "expected_keywords": ["Vertex AI", "Gemini 2.5 Flash", "Gemini 2.5 Pro"],
+    "expected_citation_prefix": "https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview",
+    "max_word_count": 320
+  }
+]
